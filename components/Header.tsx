@@ -10,7 +10,7 @@ export const Header = () => {
   //TODO : Implement real data by logged in with facebook
   const dummyUser = {
     id: 'randomID',
-    name: 'Hao Nguyen',
+    name: 'Tim Apple',
   };
 
   if (session) {
