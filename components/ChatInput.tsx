@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import { ZodError } from 'zod';
 import { z } from 'zod';
 import useSWR from 'swr';
+import type { MutatorOptions } from 'swr';
 import { uploadMessageToUpStash } from '../utils/uploadMessageToUpStash';
 import { fetchMessages } from '../utils/fetchMessages';
 import type { TMessage } from '../type';
+import { Loader } from './Loader';
 
 //Type definition
 export const TypeMessage = z.object({
@@ -30,9 +32,10 @@ export const ChatInput = () => {
    * @param {string} e input value
    * @returns
    */
+
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
-  ): Promise<number | undefined> => {
+  ): Promise<TMessage[] | undefined> => {
     e.preventDefault();
     if (!input) return;
 
@@ -49,8 +52,19 @@ export const ChatInput = () => {
         profilePic:
           'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       });
-      const res = await uploadMessageToUpStash(message);
-      if (res) return res.data;
+      // Validate the input on the front end first just in case, then send the message to the api/addMessage.
+      // Because the api will response with the exact message with the createAt time modify to the server time, we will use this data to optimistically update the cache of all message first.
+      // In the background, the server will actually perform the writing of this message to the Redis database, if something go wrong. When the component refetch the api/getMessages in will rollback to previous
+      const newMessage = await uploadMessageToUpStash(message);
+      if (messagesData) {
+        const allMessageUpdate = [newMessage, ...messagesData.result];
+        const options: MutatorOptions = {
+          optimisticData: allMessageUpdate,
+          rollbackOnError: true,
+        };
+        await mutate({ result: allMessageUpdate }, options);
+        return;
+      }
     } catch (e) {
       if (e instanceof ZodError) {
         console.error(e.issues);
@@ -64,9 +78,17 @@ export const ChatInput = () => {
     }
   };
 
+  if (error) return <div>Something wrong: {error}</div>;
+  if (!messagesData)
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
+
   return (
     <form
-      className="fixed bottom-0 left-0 right-0 z-50 flex w-full gap-4 p-4"
+      className="fixed bottom-0 left-0 right-0 z-50 flex w-full gap-4 bg-black p-4"
       onSubmit={(e) => handleSubmit(e)}
     >
       <input
@@ -74,14 +96,28 @@ export const ChatInput = () => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Enter Message..."
-        className="w-full rounded-md text-black"
+        className="w-full max-w-[100vw] rounded-2xl bg-black text-white"
       ></input>
       <button
         disabled={!input || input.length <= 0}
         type="submit"
-        className="rounded-md bg-fb-blue p-2 hover:bg-opacity-70 disabled:cursor-not-allowed disabled:opacity-50"
+        className="rounded-md p-2 hover:bg-opacity-70 disabled:cursor-not-allowed disabled:opacity-50"
+        title="Send Message"
       >
-        Send
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="h-8 w-8 fill-fb-blue stroke-black"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+          />
+        </svg>
       </button>
     </form>
   );

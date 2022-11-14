@@ -1,7 +1,7 @@
-import Image from "next/image";
-import React from "react";
-import MessengerLogo from "../public/logo/logo-1024.png";
-import { LogoutButton } from "./LogoutButton";
+import Image from 'next/image';
+import React from 'react';
+import MessengerLogo from '../public/logo/logo-1024.png';
+import { LogoutButton } from './LogoutButton';
 
 export const Header = () => {
   //TODO : Apply real session with Authentication later
@@ -9,13 +9,13 @@ export const Header = () => {
 
   //TODO : Implement real data by logged in with facebook
   const dummyUser = {
-    id: "randomID",
-    name: "Hao Nguyen",
+    id: 'randomID',
+    name: 'Hao Nguyen',
   };
 
   if (session) {
     return (
-      <header>
+      <header className="sticky top-0 left-0 right-0 z-50 bg-black">
         <h1 className="text-center text-2xl">Facebook Messenger</h1>
         <div className="flex items-center justify-between gap-4 p-4">
           <div className="flex gap-2">

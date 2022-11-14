@@ -9,7 +9,7 @@ type Props = {
 
 export const MessageItem = ({ message }: Props) => {
   return (
-    <div className="flex items-center gap-2 pt-4">
+    <div className="flex items-center gap-2">
       <Image
         src={message.profilePic}
         alt={`${message.username}'s profile picture`}
@@ -17,7 +17,15 @@ export const MessageItem = ({ message }: Props) => {
         height={300}
         className="h-12 w-12 rounded-full"
       />
-      <p className="rounded-2xl bg-fb-blue py-3 px-4">{message.message}</p>
+      <div className="flex flex-col gap-2">
+        <p className="text-sm">{message.username}</p>
+        <p className="whitespace-normal break-all rounded-2xl bg-fb-blue py-3 px-4">
+          {message.message}
+        </p>
+        <p className="text-xs text-gray-200">
+          {new Date(message.createdAt).toLocaleTimeString()}
+        </p>
+      </div>
     </div>
   );
 };

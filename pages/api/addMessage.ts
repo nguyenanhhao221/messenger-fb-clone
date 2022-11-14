@@ -2,12 +2,13 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { ZodError } from 'zod';
 import { TypeMessage } from '../../components/ChatInput';
 import { client } from '../../redis';
+import type { TMessage } from '../../type';
 
 type ErrorData = {
   body: string;
 };
 type ResponseData = {
-  data: number;
+  result: TMessage;
 };
 
 export default async function handler(
@@ -18,20 +19,30 @@ export default async function handler(
     res.status(405).json({ body: 'Method not allow' });
     return;
   }
-  //TODO implement better typing instead of "as"
   const { message } = req.body;
   try {
+    //Validate input again in the backend because you can never trust the front end :D
     const validateMessageInput = TypeMessage.parse(message);
-    // *Replace the createAt time from the client with the time stamp on the server
-    const newMessage = { ...validateMessageInput, createdAt: Date.now() };
+    // * Replace the createAt time from the client with the time stamp on the server
+    const newMessageUpdateTime = {
+      ...validateMessageInput,
+      createdAt: Date.now(),
+    };
+    // if the input is valid and new time is created, send back to the client this message first.
+    // Then actually perform write operation to the redis database to post the message.
+    if (newMessageUpdateTime) {
+      res.status(201).json({ result: newMessageUpdateTime });
+    }
     //push the message to UpStash
-    const response = await client.hset(
+    const addNewMessage = await client.hset(
       'message',
-      newMessage.id,
-      JSON.stringify(newMessage)
+      newMessageUpdateTime.id,
+      JSON.stringify(newMessageUpdateTime)
     );
-    res.status(201).json({ data: response });
-    return;
+    if (!addNewMessage) {
+      res.status(500).json({ body: 'Cannot create message on the server' });
+      return;
+    }
   } catch (error) {
     console.error(error);
     if (error instanceof ZodError) {
