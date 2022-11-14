@@ -3,7 +3,12 @@ import cuid from 'cuid';
 import React, { useState } from 'react';
 import { ZodError } from 'zod';
 import { z } from 'zod';
+import useSWR from 'swr';
+import { uploadMessageToUpStash } from '../utils/uploadMessageToUpStash';
+import { fetchMessages } from '../utils/fetchMessages';
+import type { TMessage } from '../type';
 
+//Type definition
 export const TypeMessage = z.object({
   id: z.string().cuid(),
   message: z.string().min(1),
@@ -12,31 +17,14 @@ export const TypeMessage = z.object({
   profilePic: z.string().url(),
 });
 
-/**
- * @async
- * @function uploadMessageToUpStash
- * @param {z.infer<typeof TypeMessage>} message - The message object to be sent to the API
- * @returns The success status from the api
- */
-const uploadMessageToUpStash = async (
-  message: z.infer<typeof TypeMessage>
-): Promise<{ data: number }> => {
-  const res = await fetch('/api/addMessage', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ message }),
-  });
-  if (res.ok) {
-    const jsonResponse = await res.json();
-    return jsonResponse;
-  }
-  throw new Error('Network Error');
-};
-
 export const ChatInput = () => {
   const [input, setInput] = useState<string>('');
+  const {
+    data: messagesData,
+    error,
+    mutate,
+  } = useSWR<{ result: TMessage[] }>('/api/getMessages', fetchMessages);
+
   /**
    * Send message handler.Check if the message is valid, if yes then make POST request to API end point
    * @param {string} e input value
@@ -58,7 +46,8 @@ export const ChatInput = () => {
         message: messageToSend,
         createdAt: Date.now(),
         username: 'Tim Apple',
-        profilePic: 'https://unsplash.com/photos/6anudmpILw4',
+        profilePic:
+          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       });
       const res = await uploadMessageToUpStash(message);
       if (res) return res.data;
