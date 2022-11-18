@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ZodError } from 'zod';
-import { TypeMessage } from '../../components/ChatInput';
+import { z, ZodError } from 'zod';
+// import { TypeMessage } from '../../components/ChatInput';
 import { serverPusher } from '../../pusher/serverPusher';
 import { client } from '../../redis';
 import type { TMessage } from '../../type';
@@ -11,6 +11,14 @@ type ErrorData = {
 type ResponseData = {
   result: TMessage;
 };
+
+export const TypeMessage = z.object({
+  id: z.string().cuid(),
+  message: z.string().min(1),
+  createdAt: z.number(),
+  username: z.string().min(1),
+  profilePic: z.string().url(),
+});
 
 export default async function handler(
   req: NextApiRequest,

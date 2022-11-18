@@ -4,10 +4,13 @@ import { fetchMessages } from '../utils/fetchMessages';
 import useSWR from 'swr';
 import { MessageItem } from './MessageItem';
 import type { TMessage } from '../type';
-import { Loader } from './Loader';
 import { clientPusher } from '../pusher/clientPusher';
 
-export const MessageList = () => {
+type Props = {
+  initialMessage: { result: TMessage[] };
+};
+
+export const MessageList = ({ initialMessage }: Props) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const {
     data: messagesData,
@@ -63,22 +66,18 @@ export const MessageList = () => {
 
   if (error) return <div>Something wrong: {error}</div>;
 
-  if (!messagesData || !messagesData.result)
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
   return (
     <div className="mx-auto max-w-2xl space-y-4 px-4 pb-32 xl:max-w-4xl">
-      {messagesData?.result?.map((message, index, messageArr) => (
-        <div key={message.id}>
-          <MessageItem
-            message={message}
-            lastItem={index === messageArr.length - 1 ? true : false}
-          />
-        </div>
-      ))}
+      {(messagesData || initialMessage)?.result?.map(
+        (message, index, messageArr) => (
+          <div key={message.id}>
+            <MessageItem
+              message={message}
+              lastItem={index === messageArr.length - 1 ? true : false}
+            />
+          </div>
+        )
+      )}
       <div ref={bottomRef} className="bottom-div"></div>
     </div>
   );

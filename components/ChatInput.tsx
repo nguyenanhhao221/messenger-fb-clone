@@ -7,7 +7,6 @@ import useSWR from 'swr';
 import { uploadMessageToUpStash } from '../utils/uploadMessageToUpStash';
 import { fetchMessages } from '../utils/fetchMessages';
 import type { TMessage } from '../type';
-import { Loader } from './Loader';
 
 //Type definition
 export const TypeMessage = z.object({
@@ -76,12 +75,6 @@ export const ChatInput = () => {
   };
 
   if (error) return <div>Something wrong: {error}</div>;
-  if (!messagesData)
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
 
   return (
     <form
