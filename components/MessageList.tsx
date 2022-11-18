@@ -38,28 +38,28 @@ export const MessageList = () => {
    * For example, if we run this function on all client, the Client A which originally send the message, Pusher will also tell client A to run that function and will cause duplicate message again
    * So we need to check if the message id that was just created is already in the cache (because ChatInput of Client A will be optimistically updated with this new message), if this created message by Pusher is already exist in the cache, we don't return anything. If it is not, we run the function with the new message data and update the cache (in this case in client B)
    */
-  const channel = clientPusher.subscribe(channelName);
   useEffect(() => {
-    channel.bind(eventName, async (newMessage: TMessage) => {
+    const channel = clientPusher.subscribe(channelName);
+    channel.bind(eventName, (newMessage: TMessage) => {
       const isSubscribeMessageExist = messagesData?.result.find(
         ({ id }) => id === newMessage.id
       );
       if (isSubscribeMessageExist) return;
-      if (messagesData) {
-        return mutate(
-          { ...messagesData, result: [...messagesData?.result, newMessage] },
-          { rollbackOnError: true }
-        );
-      }
+
       // If messageData doesn't exist, call the api to load the message
       if (!messagesData) return fetchMessages;
+
+      mutate(
+        { ...messagesData, result: [...messagesData?.result, newMessage] },
+        { rollbackOnError: true }
+      );
     });
     // Clean up, unsubscribe to avoid open connection
     return () => {
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, [channel, messagesData, messagesData?.result, mutate]);
+  }, [messagesData, messagesData?.result, mutate]);
 
   if (error) return <div>Something wrong: {error}</div>;
 
@@ -69,7 +69,6 @@ export const MessageList = () => {
         <Loader />
       </div>
     );
-
   return (
     <div className="mx-auto max-w-2xl space-y-4 px-4 pb-32 xl:max-w-4xl">
       {messagesData?.result?.map((message, index, messageArr) => (
