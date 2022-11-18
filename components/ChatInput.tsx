@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { ZodError } from 'zod';
 import { z } from 'zod';
 import useSWR from 'swr';
-import type { MutatorOptions } from 'swr';
 import { uploadMessageToUpStash } from '../utils/uploadMessageToUpStash';
 import { fetchMessages } from '../utils/fetchMessages';
 import type { TMessage } from '../type';
@@ -35,7 +34,7 @@ export const ChatInput = () => {
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
-  ): Promise<TMessage[] | undefined> => {
+  ): Promise<TMessage | undefined> => {
     e.preventDefault();
     if (!input) return;
 
@@ -55,16 +54,14 @@ export const ChatInput = () => {
       // Validate the input on the front end first just in case, then send the message to the api/addMessage.
       // Because the api will response with the exact message with the createAt time modify to the server time, we will use this data to optimistically update the cache of all message first.
       // In the background, the server will actually perform the writing of this message to the Redis database, if something go wrong. When the component refetch the api/getMessages in will rollback to previous
-      const newMessage = await uploadMessageToUpStash(message);
+      await uploadMessageToUpStash(message);
       if (messagesData) {
-        const allMessageUpdate = [newMessage, ...messagesData.result];
-        const options: MutatorOptions = {
-          optimisticData: allMessageUpdate,
-          rollbackOnError: true,
-        };
-        await mutate({ result: allMessageUpdate }, options);
-        return;
+        mutate(
+          { ...messagesData, result: [...messagesData.result, message] },
+          { rollbackOnError: true }
+        );
       }
+      return;
     } catch (e) {
       if (e instanceof ZodError) {
         console.error(e.issues);

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ZodError } from 'zod';
 import { TypeMessage } from '../../components/ChatInput';
+import { serverPusher } from '../../pusher';
 import { client } from '../../redis';
 import type { TMessage } from '../../type';
 
@@ -43,6 +44,9 @@ export default async function handler(
       res.status(500).json({ body: 'Cannot create message on the server' });
       return;
     }
+
+    //Push the message to Pusher so all the clients can subscribe to it
+    return serverPusher.trigger('message', 'new-message', newMessageUpdateTime);
   } catch (error) {
     console.error(error);
     if (error instanceof ZodError) {

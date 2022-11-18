@@ -5,9 +5,10 @@ import type { TMessage } from '../type';
 
 type Props = {
   message: TMessage;
+  lastItem: boolean;
 };
 
-export const MessageItem = ({ message }: Props) => {
+export const MessageItem = ({ message, lastItem }: Props) => {
   //TODO Update actually logic to check if it is user, use hard code for now
   const isUser = true;
 
@@ -22,7 +23,9 @@ export const MessageItem = ({ message }: Props) => {
         alt={`${message.username}'s profile picture`}
         width={300}
         height={300}
-        className={`h-12 w-12 rounded-full ${isUser ? `order-2` : `order-1`}`}
+        className={`h-12 w-12 rounded-full ${isUser ? `order-2` : `order-1`} ${
+          isUser && lastItem ? `block` : `hidden`
+        }`}
       />
       <div
         className={`flex flex-col gap-2 ${
