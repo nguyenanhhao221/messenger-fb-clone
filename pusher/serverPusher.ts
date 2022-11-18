@@ -8,6 +8,9 @@ if (!PUSHER_KEY || !PUSHER_SECRET || !PUSHER_CLUSTER || !PUSHER_APP_ID) {
   throw new Error(`Key for PUSHER is not valid, please check your .env files `);
 }
 
+/**
+ * serverPusher instance
+ */
 export const serverPusher = new Pusher({
   appId: PUSHER_APP_ID,
   key: PUSHER_KEY,
