@@ -51,8 +51,14 @@ export const MessageList = () => {
           { rollbackOnError: true }
         );
       }
-      return fetchMessages;
+      // If messageData doesn't exist, call the api to load the message
+      if (!messagesData) return fetchMessages;
     });
+    // Clean up, unsubscribe to avoid open connection
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
   }, [channel, messagesData, messagesData?.result, mutate]);
 
   if (error) return <div>Something wrong: {error}</div>;
