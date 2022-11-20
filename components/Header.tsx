@@ -15,7 +15,7 @@ export const Header = () => {
 
   if (session) {
     return (
-      <header className="sticky top-0 left-0 right-0 z-50 bg-black">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black">
         <h1 className="text-center text-2xl">Facebook Messenger</h1>
         <div className="flex items-center justify-between gap-4 p-4">
           <div className="flex gap-2">
