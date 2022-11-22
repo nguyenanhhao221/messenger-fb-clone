@@ -5,12 +5,14 @@ import useSWR from 'swr';
 import { MessageItem } from './MessageItem';
 import type { TMessage } from '../type';
 import { clientPusher } from '../pusher/clientPusher';
+import type { Session } from 'next-auth';
 
 type Props = {
   initialMessage: { result: TMessage[] };
+  session: Session;
 };
 
-export const MessageList = ({ initialMessage }: Props) => {
+export const MessageList = ({ initialMessage, session }: Props) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const {
     data: messagesData,
@@ -67,7 +69,7 @@ export const MessageList = ({ initialMessage }: Props) => {
   if (error) return <div>Something wrong: {error}</div>;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4 px-4 pb-32 xl:max-w-4xl">
+    <div className="mx-auto space-y-4 px-4 pb-32 md:w-[90vw] ">
       {(messagesData || initialMessage)?.result?.map(
         (message, index, messageArr) => (
           <div key={message.id}>
