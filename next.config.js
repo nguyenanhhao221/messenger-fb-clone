@@ -9,6 +9,11 @@ const nextConfig = {
         hostname: 'images.unsplash.com',
         port: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'platform-lookaside.fbsbx.com',
+        port: '',
+      },
     ],
   },
   experimental: {

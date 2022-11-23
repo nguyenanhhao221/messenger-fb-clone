@@ -74,6 +74,7 @@ export const MessageList = ({ initialMessage, session }: Props) => {
         (message, index, messageArr) => (
           <div key={message.id}>
             <MessageItem
+              session={session}
               message={message}
               lastItem={index === messageArr.length - 1 ? true : false}
             />

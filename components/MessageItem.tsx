@@ -1,4 +1,5 @@
 'use client';
+import type { Session } from 'next-auth';
 import Image from 'next/image';
 import React from 'react';
 import type { TMessage } from '../type';
@@ -6,9 +7,10 @@ import type { TMessage } from '../type';
 type Props = {
   message: TMessage;
   lastItem: boolean;
+  session: Session;
 };
 
-export const MessageItem = ({ message, lastItem }: Props) => {
+export const MessageItem = ({ message, lastItem, session }: Props) => {
   //TODO Update actually logic to check if it is user, use hard code for now
   const isUser = true;
 

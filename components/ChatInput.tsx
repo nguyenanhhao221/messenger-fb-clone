@@ -7,6 +7,8 @@ import useSWR from 'swr';
 import { uploadMessageToUpStash } from '../utils/uploadMessageToUpStash';
 import { fetchMessages } from '../utils/fetchMessages';
 import type { TMessage } from '../type';
+import type { Session } from 'next-auth';
+import { useSession } from 'next-auth/react';
 
 //Type definition
 export const TypeMessage = z.object({
@@ -17,7 +19,10 @@ export const TypeMessage = z.object({
   profilePic: z.string().url(),
 });
 
-export const ChatInput = () => {
+type Props = {
+  session: Session;
+};
+export const ChatInput = ({ session }: Props) => {
   const [input, setInput] = useState<string>('');
   const {
     data: messagesData,
@@ -46,9 +51,9 @@ export const ChatInput = () => {
         id: cuid(),
         message: messageToSend,
         createdAt: Date.now(),
-        username: 'Tim Apple',
-        profilePic:
-          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
+        username: session.user?.name,
+        profilePic: session.user?.image,
+        email: session.user?.email,
       });
       // Validate the input on the front end first just in case, then send the message to the api/addMessage.
       // Because the api will response with the exact message with the createAt time modify to the server time, we will use this data to optimistically update the cache of all message first.
