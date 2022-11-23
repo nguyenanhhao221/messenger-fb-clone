@@ -18,6 +18,7 @@ export const TypeMessage = z.object({
   createdAt: z.number(),
   username: z.string().min(1),
   profilePic: z.string().url(),
+  email: z.string().email(),
 });
 
 export default async function handler(

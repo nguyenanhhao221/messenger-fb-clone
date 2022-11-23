@@ -11,8 +11,8 @@ type Props = {
 };
 
 export const MessageItem = ({ message, lastItem, session }: Props) => {
-  //TODO Update actually logic to check if it is user, use hard code for now
-  const isUser = true;
+  if (!session) return <></>;
+  const isUser = session.user?.email === message.email;
 
   return (
     <div
@@ -35,7 +35,11 @@ export const MessageItem = ({ message, lastItem, session }: Props) => {
         }`}
       >
         <p className="text-sm">{message.username}</p>
-        <p className="whitespace-normal break-all rounded-2xl bg-fb-blue py-3 px-4">
+        <p
+          className={`whitespace-normal break-all rounded-2xl ${
+            isUser ? `bg-fb-blue` : `bg-slate-500`
+          } py-3 px-4`}
+        >
           {message.message}
         </p>
         <p className="text-xs text-gray-200">

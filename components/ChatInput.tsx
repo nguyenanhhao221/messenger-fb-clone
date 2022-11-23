@@ -8,7 +8,6 @@ import { uploadMessageToUpStash } from '../utils/uploadMessageToUpStash';
 import { fetchMessages } from '../utils/fetchMessages';
 import type { TMessage } from '../type';
 import type { Session } from 'next-auth';
-import { useSession } from 'next-auth/react';
 
 //Type definition
 export const TypeMessage = z.object({
@@ -17,11 +16,13 @@ export const TypeMessage = z.object({
   createdAt: z.number(),
   username: z.string().min(1),
   profilePic: z.string().url(),
+  email: z.string().email(),
 });
 
 type Props = {
   session: Session;
 };
+
 export const ChatInput = ({ session }: Props) => {
   const [input, setInput] = useState<string>('');
   const {
