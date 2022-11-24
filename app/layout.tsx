@@ -9,11 +9,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head />
-      <body className="bg-black text-white">
-        {/* @ts-expect-error Server Component */}
-        <Header />
-        {children}
-      </body>
+      <body className="bg-black text-white">{children}</body>
     </html>
   );
 }

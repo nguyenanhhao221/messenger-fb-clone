@@ -12,6 +12,6 @@
 
 @layer components {
   .authentication-button {
-    @apply rounded-md bg-fb-blue p-2 hover:bg-opacity-70;
+    @apply inline rounded-md bg-fb-blue px-1 py-2 hover:bg-opacity-70;
   }
 }

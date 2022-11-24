@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z, ZodError } from 'zod';
-// import { TypeMessage } from '../../components/ChatInput';
 import { serverPusher } from '../../pusher/serverPusher';
 import { client } from '../../redis';
 import type { TMessage } from '../../type';

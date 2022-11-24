@@ -1,12 +1,16 @@
+import React from 'react';
 import { unstable_getServerSession } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 import MessengerLogo from '../public/logo/logo-1024.png';
-import { SignOutButton } from './SignOutButton';
 
-export const Header = async () => {
+type Props = {
+  userId: string;
+};
+
+export const Header = async ({ userId }: Props) => {
   const session = await unstable_getServerSession();
+
   if (session) {
     return (
       <header className="sticky top-0 left-0 right-0 z-50 mx-auto bg-black md:w-[90%]">
@@ -20,7 +24,7 @@ export const Header = async () => {
               className="h-12 w-12"
             />
           </Link>
-          <Link href={`/user/${session.user?.email}`} className="flex gap-2">
+          <Link href={`/user/${userId}`} className="flex gap-2">
             <Image
               alt="Facebook messenger"
               src={session.user?.image || MessengerLogo}

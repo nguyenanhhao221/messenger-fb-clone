@@ -27,7 +27,7 @@ export default async function handler(
     return;
   }
   //   TODO Implement session before load message
-  //Make request to get Message from UpStash
+  //   Make request to get Message from UpStash
   try {
     const messageArrResponse: TMessage[] = (await client.hvals('message')).map(
       (message) => JSON.parse(message)

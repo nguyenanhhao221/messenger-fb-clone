@@ -28,7 +28,6 @@ specifiers:
   zod: ^3.19.1
 
 dependencies:
-  cuid: 2.1.8
   ioredis: 5.2.4
   next: 13.0.3_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.17.0_ogpkrxaz2lg6nectum6dl66tn4
@@ -48,6 +47,7 @@ devDependencies:
   '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
   autoprefixer: 10.4.13_postcss@8.4.19
   concurrently: 7.5.0
+  cuid: 2.1.8
   eslint: 8.27.0
   eslint-config-next: 13.0.3_rmayb2veg2btbq6mbmnyivgasy
   postcss: 8.4.19
@@ -762,7 +762,7 @@ packages:
 
   /cuid/2.1.8:
     resolution: {integrity: sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==}
-    dev: false
+    dev: true
 
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}

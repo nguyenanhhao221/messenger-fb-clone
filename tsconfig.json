@@ -32,7 +32,8 @@
     "tailwind.config.js",
     "postcss.config.js",
     "prettier.config.js",
-    "next.config.js"
+    "next.config.js",
+    "app/user/[userId]"
   ],
   "exclude": ["node_modules"]
 }
