@@ -4,9 +4,8 @@ import type { TMessage } from '../type';
 import { unstable_getServerSession } from 'next-auth';
 import { ChatPageDisplay } from '../components/ChatPageDisplay';
 import { Header } from '../components/Header';
-import { client } from '../redis';
-import cuid from 'cuid';
 import { getUserInfo } from '../utils/getUserInfo';
+import { loadAllChatRooms } from '../utils/chatRoom';
 
 const HomePage = async () => {
   const session = await unstable_getServerSession();
@@ -25,6 +24,7 @@ const HomePage = async () => {
   )
     return <div>Email, Name or Image not available</div>;
 
+  // Get User Information base on the session
   const userInfo = await getUserInfo(email, name, image);
   if (!userInfo)
     return <div>User info not available, problem with backend</div>;
@@ -35,6 +35,18 @@ const HomePage = async () => {
       ? `https://${process.env.VERCEL_URL}/api/getMessages`
       : `http://localhost:3000/api/getMessages`
   ).then((res) => res.json());
+
+  // Load All the Chat Rooms of that user
+  const userId = userInfo.id;
+  const defaultAccountId = process.env.DEFAULT_USER_HAO_ID;
+  if (!defaultAccountId)
+    return (
+      <div>
+        Default account id not available, double check database and env file
+      </div>
+    );
+  const allChatRoom = loadAllChatRooms(userId, defaultAccountId);
+  console.log('🚀 ~ HomePage ~ allChatRoom', allChatRoom);
 
   return (
     <main>
