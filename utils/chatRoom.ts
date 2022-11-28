@@ -1,3 +1,4 @@
+import cuid from 'cuid';
 import 'server-only';
 import { client } from '../redis';
 
@@ -5,11 +6,23 @@ const createDefaultChatRoom = async (
   userId: string,
   defaultAccountId: string
 ) => {
-  return await client.sadd(
-    `user:${userId}:rooms`,
-    `${userId}:${defaultAccountId}`
-  );
+  // Create a randomId to become the roomId
+  const randomRoomId = cuid();
+  //Add this room to both user:rooms
+  Promise.all([
+    await client.sadd(`user:${userId}:rooms`, randomRoomId),
+    await client.sadd(`user:${defaultAccountId}:rooms`, randomRoomId),
+  ]);
+
+  // Add both the user's id the the room
+  Promise.all([
+    await client.sadd(`room:${randomRoomId}:users`, userId),
+    await client.sadd(`room:${randomRoomId}:users`, defaultAccountId),
+  ]);
+
+  return;
 };
+
 export const loadAllChatRooms = async (
   userId: string,
   defaultAccountId: string

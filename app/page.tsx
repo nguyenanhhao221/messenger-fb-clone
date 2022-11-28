@@ -45,7 +45,8 @@ const HomePage = async () => {
         Default account id not available, double check database and env file
       </div>
     );
-  const allChatRoom = loadAllChatRooms(userId, defaultAccountId);
+  const allChatRoom = await loadAllChatRooms(userId, defaultAccountId);
+
   console.log('🚀 ~ HomePage ~ allChatRoom', allChatRoom);
 
   return (
