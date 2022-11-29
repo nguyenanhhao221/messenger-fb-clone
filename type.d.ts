@@ -3,8 +3,10 @@ import type { TypeMessage } from './components/ChatInput';
 
 export type TMessage = z.infer<typeof TypeMessage>;
 
-export type TChatRoom = {
+export type TUser = {
   id: string;
   name: string;
   image: string;
 };
+
+type TChatRoom = TUser;

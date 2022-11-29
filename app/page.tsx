@@ -5,7 +5,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { ChatPageDisplay } from '../components/ChatPageDisplay';
 import { Header } from '../components/Header';
 import { getUserInfo } from '../utils/getUserInfo';
-import { loadAllChatRooms } from '../utils/chatRoom';
+import { getAllChatRoomsIds } from '../utils/chatRoom';
 
 const HomePage = async () => {
   const session = await unstable_getServerSession();
@@ -45,9 +45,9 @@ const HomePage = async () => {
         Default account id not available, double check database and env file
       </div>
     );
-  const allChatRoom = await loadAllChatRooms(userId, defaultAccountId);
+  const allChatRoomsIds = await getAllChatRoomsIds(userId);
 
-  console.log('🚀 ~ HomePage ~ allChatRoom', allChatRoom);
+  console.log('🚀 ~ HomePage ~ allChatRoom', allChatRoomsIds);
 
   return (
     <main>
