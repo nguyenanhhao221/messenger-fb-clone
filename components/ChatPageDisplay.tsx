@@ -7,10 +7,10 @@ import type { Session } from 'next-auth';
 import type { TMessage } from '../type';
 
 type Props = {
-  initialMessage: { result: TMessage[] };
+  initialMessages: TMessage[];
   session: Session;
 };
-export const ChatPageDisplay = ({ initialMessage, session }: Props) => {
+export const ChatPageDisplay = ({ initialMessages, session }: Props) => {
   const [showChatRooms, setShowChatRooms] = useState<boolean>(true);
   return (
     <div>

@@ -17,6 +17,7 @@ export const TypeMessage = z.object({
   username: z.string().min(1),
   profilePic: z.string().url(),
   email: z.string().email(),
+  roomId: z.string().cuid().min(1),
 });
 
 type Props = {

@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
-import { client } from '../../redis';
-import type { TMessage } from '../../type';
-import { authOptions } from './auth/[...nextauth]';
+import { client } from '../../../../redis';
+import type { TMessage } from '../../../../type';
+import { authOptions } from '../../auth/[...nextauth]';
 
 type ErrorData = {
   body: string;
@@ -26,9 +26,12 @@ export default async function handler(
     res.status(405).json({ body: 'Method not allow' });
     return;
   }
-  //   TODO Implement session before load message
   //   Make request to get Message from UpStash
   try {
+    const roomId = req.query.roomId;
+    console.log('🚀 ~ roomId', roomId);
+    if (!roomId)
+      return res.status(404).json({ body: 'Room Id is not valid in URL' });
     const messageArrResponse: TMessage[] = (await client.hvals('message')).map(
       (message) => JSON.parse(message)
     );

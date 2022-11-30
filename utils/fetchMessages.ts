@@ -7,9 +7,9 @@ import type { TMessage } from '../type';
  */
 //TODO Update valid key base on different chat conversation
 export const fetchMessages = async (
-  key = 'message'
+  roomId: string
 ): Promise<{ result: TMessage[] }> => {
-  const endpoint = 'api/getMessages';
+  const endpoint = `api/getMessages`;
   try {
     const res = await fetch(endpoint);
     if (res.ok) {
