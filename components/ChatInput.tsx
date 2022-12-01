@@ -57,11 +57,12 @@ export const ChatInput = ({ session, roomId }: Props) => {
         username: session.user?.name,
         profilePic: session.user?.image,
         email: session.user?.email,
+        roomId: roomId,
       });
       // Validate the input on the front end first just in case, then send the message to the api/addMessage.
       // Because the api will response with the exact message with the createAt time modify to the server time, we will use this data to optimistically update the cache of all message first.
       // In the background, the server will actually perform the writing of this message to the Redis database, if something go wrong. When the component refetch the api/getMessages in will rollback to previous
-      await uploadMessageToUpStash(message);
+      await uploadMessageToUpStash(message, roomId);
       if (messagesData) {
         mutate([...messagesData, message], { rollbackOnError: true });
       }

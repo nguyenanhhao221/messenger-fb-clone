@@ -23,10 +23,10 @@ export const MessageItem = ({ message, lastItem, session }: Props) => {
       <Image
         src={message.profilePic}
         alt={`${message.username}'s profile picture`}
-        width={300}
-        height={300}
-        className={`h-12 w-12 rounded-full ${isUser ? `order-2` : `order-1`} ${
-          isUser && lastItem ? `block` : `hidden`
+        width={8}
+        height={8}
+        className={`h-5 w-5 rounded-full ${isUser ? `order-2` : `order-1`} ${
+          lastItem ? `block` : `hidden`
         }`}
       />
       <div

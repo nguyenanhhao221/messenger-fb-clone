@@ -7,9 +7,10 @@ import type { TMessage } from '../type';
  * @returns The success status from the api
  */
 export const uploadMessageToUpStash = async (
-  newMessage: TMessage
+  newMessage: TMessage,
+  roomId: string
 ): Promise<TMessage> => {
-  const endpoint = 'api/addMessage';
+  const endpoint = `/api/addMessage/room/${roomId}`;
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: {

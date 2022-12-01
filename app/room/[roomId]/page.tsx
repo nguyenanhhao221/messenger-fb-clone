@@ -1,9 +1,10 @@
 import { unstable_getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { ChatInput } from '../../../components/ChatInput';
-import { Header } from '../../../components/Header';
+import { ChatRoomHeader } from '../../../components/ChatRoomHeader';
 import { MessageList } from '../../../components/MessageList';
 import { client } from '../../../redis';
+import { TMessage } from '../../../type';
 import { getUserInfo } from '../../../utils/getUserInfo';
 
 export default async function RoomPage({
@@ -35,14 +36,19 @@ export default async function RoomPage({
   //Get Initial Message for the Room
   const roomId = params.roomId;
   //TODO check if user is authorized to view content in the room
-  const initialRoomMessages = (
+  const initialRoomMessages: TMessage[] = (
     await client.hvals(`room:${roomId}:messages`)
   ).map((messageData) => JSON.parse(messageData));
-
+  const firstMessage = initialRoomMessages[0];
+  if (!firstMessage) return <>First message not available</>;
   return (
     <>
-      {/* @ts-expect-error Server Component */}
-      <Header userId={userInfo.id} />
+      <header className="sticky mb-4">
+        <ChatRoomHeader
+          roomName={firstMessage.username}
+          roomAvatar={firstMessage.profilePic}
+        />
+      </header>
       <main>
         <MessageList
           roomId={roomId}

@@ -1,14 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z, ZodError } from 'zod';
-import { serverPusher } from '../../pusher/serverPusher';
-import { client } from '../../redis';
-import type { TMessage } from '../../type';
+import { serverPusher } from '../../../../pusher/serverPusher';
+import { client } from '../../../../redis';
+import type { TMessage } from '../../../../type';
 
 type ErrorData = {
   body: string;
-};
-type ResponseData = {
-  result: TMessage;
 };
 
 export const TypeMessage = z.object({
@@ -23,13 +20,14 @@ export const TypeMessage = z.object({
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData | ErrorData>
+  res: NextApiResponse<TMessage | ErrorData>
 ) {
   if (req.method !== 'POST') {
     res.status(405).json({ body: 'Method not allow' });
     return;
   }
   const { message } = req.body;
+  const roomId = req.query.roomId;
   try {
     //Validate input again in the backend because you can never trust the front end :D
     const validateMessageInput = TypeMessage.parse(message);
@@ -41,11 +39,11 @@ export default async function handler(
     // if the input is valid and new time is created, send back to the client this message first.
     // Then actually perform write operation to the redis database to post the message.
     if (newMessageUpdateTime) {
-      res.status(201).json({ result: newMessageUpdateTime });
+      res.status(201).json(newMessageUpdateTime);
     }
     //push the message to UpStash
     const addNewMessage = await client.hset(
-      'message',
+      `room:${roomId}:messages`,
       newMessageUpdateTime.id,
       JSON.stringify(newMessageUpdateTime)
     );
