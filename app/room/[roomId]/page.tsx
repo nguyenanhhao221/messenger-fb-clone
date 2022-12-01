@@ -1,7 +1,7 @@
 import { unstable_getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { ChatInput } from '../../../components/ChatInput';
-import { ChatRoomHeader } from '../../../components/ChatRoomHeader';
+import { ChatRoomHeader } from '../../../components/ChatRooms/ChatRoomHeader';
 import { MessageList } from '../../../components/MessageList';
 import { client } from '../../../redis';
 import { TMessage } from '../../../type';

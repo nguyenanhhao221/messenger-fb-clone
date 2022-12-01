@@ -2,11 +2,11 @@ import React from 'react';
 import { redirect } from 'next/navigation';
 import type { TMessage } from '../type';
 import { unstable_getServerSession } from 'next-auth';
-import { ChatPageDisplay } from '../components/ChatPageDisplay';
 import { Header } from '../components/Header';
 import { getUserInfo } from '../utils/getUserInfo';
 import { getAllChatRoomsIds } from '../utils/chatRoom';
 import { client } from '../redis';
+import { AllChatRooms } from '../components/ChatRooms/AllChatRooms';
 
 const HomePage = async () => {
   const session = await unstable_getServerSession();
@@ -58,7 +58,7 @@ const HomePage = async () => {
       {/* @ts-expect-error Server Component */}
       <Header userId={userInfo.id} />
       <main>
-        <ChatPageDisplay session={session} initialMessages={initialMessages} />
+        <AllChatRooms initialMessages={initialMessages} session={session} />
       </main>
     </>
   );

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import type { TMessage } from '../type';
+import type { TMessage } from '../../type';
 
 type Props = {
   roomAvatar: TMessage['profilePic'];
