@@ -29,7 +29,6 @@ export default async function handler(
   //   Make request to get Message from UpStash
   try {
     const roomId = req.query.roomId;
-    console.log('🚀 ~ roomId', roomId);
     if (!roomId)
       return res.status(404).json({ body: 'Room Id is not valid in URL' });
     const messageArrResponse: TMessage[] = (await client.hvals('message')).map(

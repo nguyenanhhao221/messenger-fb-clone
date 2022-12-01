@@ -1,21 +1,34 @@
 import Image from 'next/image';
 import React from 'react';
-import type { TChatRoom } from '../../type';
+import type { TMessage } from '../../type';
+import type { Session } from 'next-auth';
 
 type Props = {
-  chatRoomInfo: TChatRoom;
+  firstMessage: TMessage | undefined;
+  session: Session;
 };
-export const ChatRoomsPreview = ({ chatRoomInfo }: Props) => {
+
+//TODO implement read/unread message
+
+export const ChatRoomsPreview = ({ firstMessage, session }: Props) => {
+  if (!firstMessage) return <></>;
+  const previewUsername =
+    firstMessage.email === session.user?.email ? `You` : firstMessage.username;
   return (
-    <div>
+    <div className="flex gap-2 px-4">
       <Image
-        src={chatRoomInfo.image}
+        src={firstMessage.profilePic}
         alt="avatar"
         width={300}
         height={300}
         className="h-12 w-12 rounded-full"
       />
-      <div>{chatRoomInfo.name}</div>
+      <div>
+        <h2 className="font-bold">{firstMessage.username}</h2>
+        <p className="overflow-hidden truncate">
+          {`${previewUsername}: ${firstMessage.message}`}
+        </p>
+      </div>
     </div>
   );
 };

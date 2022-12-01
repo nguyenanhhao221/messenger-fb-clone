@@ -6,6 +6,7 @@ import { ChatPageDisplay } from '../components/ChatPageDisplay';
 import { Header } from '../components/Header';
 import { getUserInfo } from '../utils/getUserInfo';
 import { getAllChatRoomsIds } from '../utils/chatRoom';
+import { client } from '../redis';
 
 const HomePage = async () => {
   const session = await unstable_getServerSession();
@@ -39,26 +40,24 @@ const HomePage = async () => {
       </div>
     );
   const allChatRoomsIds = await getAllChatRoomsIds(userId);
-  console.log('🚀 ~ HomePage ~ allChatRoomsIds', allChatRoomsIds);
   //Because this page is Render on the server, we can fetch the message data on the server, tell MessageList to render it as initial UI, then inside the MessageList on the client, it will refetch again to get the latest message and swap data
   // ! VERCEL_URL is only for deploy in Vercel
   // Once we got all the chatRoomIds, we will load the messages on the server
   const initialMessages = await Promise.all(
     allChatRoomsIds.map(async (roomId) => {
-      const res: { result: TMessage[] } = await fetch(
-        process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}/api/getMessages/room/${roomId}`
-          : `http://localhost:3000/api/getMessages/room/${roomId}`
-      ).then((jsonRes) => jsonRes.json());
-      return res.result;
+      const messageData = await client.hvals(`room:${roomId}:messages`);
+      const messageDataArr: TMessage[] = messageData.map((messageData) =>
+        JSON.parse(messageData)
+      );
+      return { roomId: roomId, messageData: messageDataArr };
     })
   );
-  console.log('🚀 ~ HomePage ~ initialMessages', initialMessages);
+
   return (
     <main>
       {/* @ts-expect-error Server Component */}
       <Header userId={userInfo.id} />
-      {/* <ChatPageDisplay session={session} initialMessages={...initialMessages} /> */}
+      <ChatPageDisplay session={session} initialMessages={initialMessages} />
     </main>
   );
 };

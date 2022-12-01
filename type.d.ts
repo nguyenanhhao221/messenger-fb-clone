@@ -9,4 +9,4 @@ export type TUser = {
   image: string;
 };
 
-type TChatRoom = TUser;
+export const formatChatRoomMessage = (arrOfMessageData: []) => {};
