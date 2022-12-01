@@ -22,15 +22,16 @@ export const TypeMessage = z.object({
 
 type Props = {
   session: Session;
+  roomId: string;
 };
 
-export const ChatInput = ({ session }: Props) => {
+export const ChatInput = ({ session, roomId }: Props) => {
   const [input, setInput] = useState<string>('');
   const {
     data: messagesData,
     error,
     mutate,
-  } = useSWR<{ result: TMessage[] }>('/api/getMessages', fetchMessages);
+  } = useSWR<TMessage[]>(`/api/getMessages/room/${roomId}`, fetchMessages);
 
   /**
    * Send message handler.Check if the message is valid, if yes then make POST request to API end point
@@ -62,10 +63,7 @@ export const ChatInput = ({ session }: Props) => {
       // In the background, the server will actually perform the writing of this message to the Redis database, if something go wrong. When the component refetch the api/getMessages in will rollback to previous
       await uploadMessageToUpStash(message);
       if (messagesData) {
-        mutate(
-          { ...messagesData, result: [...messagesData.result, message] },
-          { rollbackOnError: true }
-        );
+        mutate([...messagesData, message], { rollbackOnError: true });
       }
       return;
     } catch (e) {
@@ -81,7 +79,10 @@ export const ChatInput = ({ session }: Props) => {
     }
   };
 
-  if (error) return <div>Something wrong: {error}</div>;
+  if (error) {
+    console.error(error);
+    return <div>Something wrong: </div>;
+  }
 
   return (
     <form

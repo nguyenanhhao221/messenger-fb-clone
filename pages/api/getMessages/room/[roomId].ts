@@ -7,13 +7,10 @@ import { authOptions } from '../../auth/[...nextauth]';
 type ErrorData = {
   body: string;
 };
-type ResponseData = {
-  result: TMessage[];
-};
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData | ErrorData>
+  res: NextApiResponse<TMessage[] | ErrorData>
 ) {
   const session = await unstable_getServerSession(req, res, authOptions);
 
@@ -26,20 +23,20 @@ export default async function handler(
     res.status(405).json({ body: 'Method not allow' });
     return;
   }
+  const roomId = req.query.roomId;
+  if (!roomId)
+    return res.status(404).json({ body: 'Room Id is not valid in URL' });
+
   //   Make request to get Message from UpStash
   try {
-    const roomId = req.query.roomId;
-    if (!roomId)
-      return res.status(404).json({ body: 'Room Id is not valid in URL' });
-    const messageArrResponse: TMessage[] = (await client.hvals('message')).map(
-      (message) => JSON.parse(message)
-    );
+    const messageArrResponse: TMessage[] = (
+      await client.hvals(`room:${roomId}:messages`)
+    ).map((message) => JSON.parse(message));
     if (messageArrResponse) {
-      const messageResponse: TMessage[] = messageArrResponse.sort(
+      const messageResponse = messageArrResponse.sort(
         (a, b) => a.createdAt - b.createdAt
       );
-      res.status(200).json({ result: messageResponse });
-      return messageArrResponse;
+      return res.status(200).json(messageResponse);
     }
   } catch (error) {
     console.error(error);

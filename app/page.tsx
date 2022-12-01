@@ -54,11 +54,13 @@ const HomePage = async () => {
   );
 
   return (
-    <main>
+    <>
       {/* @ts-expect-error Server Component */}
       <Header userId={userInfo.id} />
-      <ChatPageDisplay session={session} initialMessages={initialMessages} />
-    </main>
+      <main>
+        <ChatPageDisplay session={session} initialMessages={initialMessages} />
+      </main>
+    </>
   );
 };
 

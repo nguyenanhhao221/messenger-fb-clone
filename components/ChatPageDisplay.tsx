@@ -11,7 +11,6 @@ type Props = {
   session: Session;
 };
 export const ChatPageDisplay = ({ initialMessages, session }: Props) => {
-  const [showChatRooms, setShowChatRooms] = useState<boolean>(true);
   return (
     <div>
       <AllChatRooms initialMessages={initialMessages} session={session} />

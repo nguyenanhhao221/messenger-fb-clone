@@ -8,17 +8,22 @@ import { clientPusher } from '../pusher/clientPusher';
 import type { Session } from 'next-auth';
 
 type Props = {
-  initialMessage: { result: TMessage[] };
+  initialRoomMessages: TMessage[];
   session: Session;
+  roomId: string;
 };
 
-export const MessageList = ({ initialMessage, session }: Props) => {
+export const MessageList = ({
+  initialRoomMessages,
+  roomId,
+  session,
+}: Props) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const {
     data: messagesData,
     error,
     mutate,
-  } = useSWR<{ result: TMessage[] }>('/api/getMessages', fetchMessages);
+  } = useSWR<TMessage[]>(`/api/getMessages/room/${roomId}`, fetchMessages);
 
   //  This will be used as a placeholder so that every time new message comes in, we will scroll to this div to make sure that we can see th latest message, otherwise user have to manually scroll down
   useEffect(() => {
@@ -46,7 +51,7 @@ export const MessageList = ({ initialMessage, session }: Props) => {
   useEffect(() => {
     const channel = clientPusher.subscribe(channelName);
     channel.bind(eventName, (newMessage: TMessage) => {
-      const isSubscribeMessageExist = messagesData?.result.find(
+      const isSubscribeMessageExist = messagesData?.find(
         ({ id }) => id === newMessage.id
       );
       if (isSubscribeMessageExist) return;
@@ -54,23 +59,23 @@ export const MessageList = ({ initialMessage, session }: Props) => {
       // If messageData doesn't exist, call the api to load the message
       if (!messagesData) return fetchMessages;
 
-      mutate(
-        { ...messagesData, result: [...messagesData?.result, newMessage] },
-        { rollbackOnError: true }
-      );
+      mutate([...messagesData, newMessage], { rollbackOnError: true });
     });
     // Clean up, unsubscribe to avoid open connection
     return () => {
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, [messagesData, messagesData?.result, mutate]);
+  }, [messagesData, mutate]);
 
-  if (error) return <div>Something wrong: {error}</div>;
+  if (error) {
+    console.error(error);
+    return <div>Something wrong: </div>;
+  }
 
   return (
     <div className="mx-auto space-y-4 px-4 pb-32 md:w-[90vw] ">
-      {(messagesData || initialMessage)?.result?.map(
+      {(messagesData || initialRoomMessages)?.map(
         (message, index, messageArr) => (
           <div key={message.id}>
             <MessageItem

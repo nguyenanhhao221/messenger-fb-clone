@@ -1,19 +1,14 @@
 import type { TMessage } from '../type';
 
 /**
- *
- * @param {string} key - The key in the UpStash to query its value
+ * @param {string} endpoint - the endpoint to the api route
  * @returns - All value stored in the provided key
  */
-//TODO Update valid key base on different chat conversation
-export const fetchMessages = async (
-  roomId: string,
-  endpoint: string
-): Promise<{ result: TMessage[] }> => {
+export const fetchMessages = async (endpoint: string) => {
   try {
     const res = await fetch(endpoint);
     if (res.ok) {
-      const jsonResponse = res.json();
+      const jsonResponse: TMessage[] = await res.json();
       return jsonResponse;
     }
     throw new Error('Network error');
