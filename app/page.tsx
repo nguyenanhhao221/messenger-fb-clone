@@ -5,7 +5,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { Header } from '../components/Header';
 import { getUserInfo } from '../utils/getUserInfo';
 import { getAllChatRoomsIds } from '../utils/chatRoom';
-import { client } from '../redis';
+import { client } from '../redis/redis';
 import { AllChatRooms } from '../components/ChatRooms/AllChatRooms';
 
 const HomePage = async () => {

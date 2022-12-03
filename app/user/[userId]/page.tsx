@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { SignOutButton } from '../../../components/SignOutButton';
-import { client } from '../../../redis';
+import { client } from '../../../redis/redis';
 import Link from 'next/link';
 import { TypeUser } from '../../../utils/getUserInfo';
 

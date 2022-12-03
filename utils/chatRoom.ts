@@ -1,6 +1,6 @@
 import 'server-only';
 import cuid from 'cuid';
-import { client } from '../redis';
+import { client } from '../redis/redis';
 import type { TMessage } from '../type';
 
 export const addDefaultMessage = async (roomId: string) => {

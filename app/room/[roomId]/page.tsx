@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { ChatInput } from '../../../components/ChatInput';
 import { ChatRoomHeader } from '../../../components/ChatRooms/ChatRoomHeader';
 import { MessageList } from '../../../components/MessageList';
-import { client } from '../../../redis';
+import { client } from '../../../redis/redis';
 import { TMessage } from '../../../type';
 import { getUserInfo } from '../../../utils/getUserInfo';
 

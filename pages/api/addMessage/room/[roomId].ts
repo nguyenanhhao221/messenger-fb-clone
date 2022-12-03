@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { z, ZodError } from 'zod';
 import { serverPusher } from '../../../../pusher/serverPusher';
-import { client } from '../../../../redis';
+import { client } from '../../../../redis/redis';
 import type { TMessage } from '../../../../type';
 
 type ErrorData = {

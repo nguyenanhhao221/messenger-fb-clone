@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
-import { client } from '../../../../redis';
+import { client } from '../../../../redis/redis';
 import type { TMessage } from '../../../../type';
 import { authOptions } from '../../auth/[...nextauth]';
 

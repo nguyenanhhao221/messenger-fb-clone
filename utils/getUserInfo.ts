@@ -1,5 +1,5 @@
 import cuid from 'cuid';
-import { client } from '../redis';
+import { client } from '../redis/redis';
 import { z } from 'zod';
 
 export const TypeUser = z.object({
