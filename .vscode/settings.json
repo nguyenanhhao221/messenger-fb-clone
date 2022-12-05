@@ -1,5 +1,15 @@
 {
   "typescript.tsdk": "node_modules/.pnpm/typescript@4.8.4/node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "cSpell.words": ["hset", "hvals", "sadd", "signin", "smembers"]
+  "cSpell.words": [
+    "hget",
+    "hset",
+    "hsetnx",
+    "hvals",
+    "sadd",
+    "signin",
+    "smembers",
+    "zadd",
+    "zrevrange"
+  ]
 }
